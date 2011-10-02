@@ -348,7 +348,7 @@ fi
 
 # Replicaset Choose Slave if Master
 if [ "$REPLICAONSLAVE" = "yes" ];then
-	DBHOST=$(mongo --host $DBHOST --quiet --eval "var im = rs.isMaster(); if(im.ismaster && im.hosts) { im.hosts[2] } else { '$DBHOST' }")
+	DBHOST=$(mongo --host $DBHOST --port $DBPORT --quiet --eval "var im = rs.isMaster(); if(im.ismaster && im.hosts) { im.hosts[2] } else { '$DBHOST' }")
 fi
 
 echo ======================================================================
