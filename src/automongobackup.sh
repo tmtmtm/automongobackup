@@ -289,7 +289,9 @@ exec 2> $LOGERR     # stderr replaced with file $LOGERR.
 
 # Database dump function
 dbdump () {
+  echo -n "## Dump start ## " && date
   mongodump --host=$DBHOST:$DBPORT --out=$1 $OPT
+  echo -n "## Dump end ## " && date
   [ -e "$1" ] && return 0
   echo "ERROR: mongodump failed to create dumpfile: $1" >&2
   return 1
@@ -298,6 +300,7 @@ dbdump () {
 # Compression function plus latest copy
 SUFFIX=""
 compression () {
+echo -n "## Compression start ## " && date
 if [ "$COMP" = "gzip" ]; then
   SUFFIX=".tgz"
   echo Tar and gzip to "$2$SUFFIX"
@@ -321,6 +324,7 @@ if [ "$CLEANUP" = "yes" ]; then
 	echo Cleaning up folder at "$1$2"
 	rm -rf "$1$2"
 fi
+echo -n "## Compression end ## " && date
 return 0
 }
 
@@ -447,9 +451,11 @@ else
                         cat "$LOGFILE"
                         echo
                         echo "###### WARNING ######"
-                        echo "STDERR written to during mongodump execution."
-                        echo "The backup probably succeeded, as mongodump sometimes writes to STDERR, but you may wish to scan the error log below:"
+                        echo "STDERR written to during mongodump execution:"
+			echo "---------------------------------------------"
+#                        echo "The backup probably succeeded, as mongodump sometimes writes to STDERR, but you may wish to scan the error log below:"
                         cat "$LOGERR"
+			echo "---------------------------------------------"
         else
                 cat "$LOGFILE"
         fi
